@@ -1,9 +1,6 @@
-from __future__ import absolute_import, unicode_literals
+from unittest.mock import patch
 
-import six
-from mock import patch
-
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from rest_framework import status
 
 from deux.app_settings import mfa_settings
@@ -59,5 +56,5 @@ class ObtainMFAAuthTokenTest(_BaseMFAViewTest):
         resp = self.check_post_response(
             self.url, status.HTTP_200_OK, data=data)
         self.assertEqual(resp.data, {
-            "token": six.text_type(self.user1.auth_token),
+            "token": str(self.user1.auth_token),
         })

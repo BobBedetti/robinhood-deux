@@ -1,5 +1,3 @@
-from __future__ import absolute_import, unicode_literals
-
 from deux.app_settings import mfa_settings
 from deux.constants import DISABLED, SMS
 

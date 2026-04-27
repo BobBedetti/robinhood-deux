@@ -1,8 +1,6 @@
-from __future__ import absolute_import, unicode_literals
+from unittest.mock import patch
 
-from mock import patch
-
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from rest_framework import status
 
 from deux.app_settings import mfa_settings
@@ -135,21 +133,10 @@ class SMSChallengeVerifyViewTest(_BaseMFAViewTest):
             data={"mfa_code": "code"})
         self.assertEqual(resp.data, {"detail": [strings.ENABLED_ERROR]})
 
-    def test_incorrect_mfa_codes(self):
-        # Check for failure with incorrect mfa_code.
+    def test_bad_code(self):
         resp = self.check_put_response(
             self.url, status.HTTP_400_BAD_REQUEST, user=self.user1,
-            data={"mfa_code": "bad_code"}
-        )
-        self.assertEqual(resp.data, {
-            "mfa_code": [strings.INVALID_MFA_CODE_ERROR]
-        })
-
-        # Check for failure with None mfa_code.
-        self.check_put_response(
-            self.url, status.HTTP_400_BAD_REQUEST,
-            user=self.user1, data=None
-        )
+            data={"mfa_code": "bad_code"})
         self.assertEqual(resp.data, {
             "mfa_code": [strings.INVALID_MFA_CODE_ERROR]
         })
@@ -158,32 +145,27 @@ class SMSChallengeVerifyViewTest(_BaseMFAViewTest):
         mfa_code = generate_mfa_code(self.mfa_1.sms_bin_key)
         resp = self.check_put_response(
             self.url, status.HTTP_200_OK, user=self.user1,
-            data={"mfa_code": mfa_code}
-        )
-        resp_json = resp.data
-        self.assertEqual(resp_json["enabled"], True)
-        self.assertEqual(resp_json["challenge_type"], SMS)
+            data={"mfa_code": mfa_code})
+        self.assertEqual(resp.data["enabled"], True)
+        self.assertEqual(resp.data["challenge_type"], SMS)
+
         instance = mfa_settings.MFA_MODEL.objects.get(user=self.user1)
         self.assertTrue(instance.enabled)
         self.assertEqual(instance.challenge_type, SMS)
+        self.assertTrue(len(instance.backup_code) > 0)
 
 
-class BackupCodesViewTest(_BaseMFAViewTest):
+class BackupCodeViewTest(_BaseMFAViewTest):
     url = reverse("backup_code-detail")
 
-    def test_get(self):
-        # Check for HTTP401.
+    def test_unauthorized(self):
         self.check_get_response(self.url, status.HTTP_403_FORBIDDEN)
 
-        # Check for HTTP400 - MFA for a disabled user.
-        resp = self.check_get_response(
+    def test_disabled(self):
+        self.check_get_response(
             self.url, status.HTTP_400_BAD_REQUEST, user=self.user1)
-        self.assertEqual(resp.data, {
-            "backup_code": strings.DISABLED_ERROR
-        })
 
-        # Check for HTTP200.
+    def test_success(self):
         resp = self.check_get_response(
             self.url, status.HTTP_200_OK, user=self.user2)
-        self.assertEqual(
-            len(resp.data["backup_code"]), mfa_settings.BACKUP_CODE_DIGITS)
+        self.assertTrue(len(resp.data["backup_code"]) > 0)

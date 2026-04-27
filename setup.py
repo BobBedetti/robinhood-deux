@@ -1,36 +1,11 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
-from setuptools import Command, setup, find_packages
-from setuptools.command.test import test
+from setuptools import setup, find_packages
 
 import os
 import re
-import sys
 import codecs
 
-try:
-    import platform
-    _pyimp = platform.python_implementation
-except (AttributeError, ImportError):
-    def _pyimp():
-        return 'Python'
-
 NAME = 'deux'
-
-E_UNSUPPORTED_PYTHON = '%s 1.2.0 requires %%s %%s or later!' % (NAME,)
-
-PYIMP = _pyimp()
-PY26_OR_LESS = sys.version_info < (2, 7)
-PY3 = sys.version_info[0] == 3
-PY33_OR_LESS = PY3 and sys.version_info < (3, 4)
-PYPY_VERSION = getattr(sys, 'pypy_version_info', None)
-PYPY = PYPY_VERSION is not None
-PYPY24_ATLEAST = PYPY_VERSION and PYPY_VERSION >= (2, 4)
-
-if PY26_OR_LESS:
-    raise Exception(E_UNSUPPORTED_PYTHON % (PYIMP, '2.7'))
-elif PY33_OR_LESS and not PYPY24_ATLEAST:
-    raise Exception(E_UNSUPPORTED_PYTHON % (PYIMP, '3.4'))
 
 # -*- Classifiers -*-
 
@@ -38,16 +13,11 @@ classes = """
     Development Status :: 4 - Beta
     License :: OSI Approved :: BSD License
     Programming Language :: Python
-    Programming Language :: Python :: 2
-    Programming Language :: Python :: 2.7
     Programming Language :: Python :: 3
-    Programming Language :: Python :: 3.4
-    Programming Language :: Python :: 3.5
+    Programming Language :: Python :: 3.11
     Programming Language :: Python :: Implementation :: CPython
-    Programming Language :: Python :: Implementation :: PyPy
     Framework :: Django
-    Framework :: Django :: 1.9
-    Framework :: Django :: 1.10
+    Framework :: Django :: 4.2
     Operating System :: OS Independent
 """
 classifiers = [s.strip() for s in classes.split('\n') if s]
@@ -136,6 +106,7 @@ setup(
     zip_safe=False,
     install_requires=reqs('default.txt'),
     tests_require=reqs('test.txt'),
+    python_requires='>=3.11',
     classifiers=classifiers,
     long_description=long_description,
 )
