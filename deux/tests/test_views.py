@@ -1,8 +1,6 @@
-from __future__ import absolute_import, unicode_literals
+from unittest.mock import patch
 
-from mock import patch
-
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from rest_framework import status
 
 from deux.app_settings import mfa_settings
@@ -27,7 +25,7 @@ class _BaseMFAViewTest(BaseUserTestCase):
 
 
 class MultiFactorAuthViewTest(_BaseMFAViewTest):
-    url = reverse("multi_factor_auth-detail")
+    url = reverse("deux:multi_factor_auth-detail")
 
     def test_get(self):
         # Check for HTTP401.
@@ -73,7 +71,7 @@ class MultiFactorAuthViewTest(_BaseMFAViewTest):
 
 
 class SMSChallengeRequestViewTest(_BaseMFAViewTest):
-    url = reverse("sms_request-detail")
+    url = reverse("deux:sms_request-detail")
 
     def test_unauthorized(self):
         self.check_put_response(self.url, status.HTTP_403_FORBIDDEN)
@@ -124,7 +122,7 @@ class SMSChallengeRequestViewTest(_BaseMFAViewTest):
 
 
 class SMSChallengeVerifyViewTest(_BaseMFAViewTest):
-    url = reverse("sms_verify-detail")
+    url = reverse("deux:sms_verify-detail")
 
     def test_unauthorized(self):
         self.check_put_response(self.url, status.HTTP_403_FORBIDDEN)
@@ -169,7 +167,7 @@ class SMSChallengeVerifyViewTest(_BaseMFAViewTest):
 
 
 class BackupCodesViewTest(_BaseMFAViewTest):
-    url = reverse("backup_code-detail")
+    url = reverse("deux:backup_code-detail")
 
     def test_get(self):
         # Check for HTTP401.

@@ -1,10 +1,7 @@
-# -*- coding: utf-8 -*-
 """Multifactor Authentication for Django Rest Framework"""
 # :copyright: (c) 2016, Robinhood Markets.
 #             All rights reserved.
 # :license:   BSD (3 Clause), see LICENSE for more details.
-
-from __future__ import absolute_import, unicode_literals
 
 from collections import namedtuple
 

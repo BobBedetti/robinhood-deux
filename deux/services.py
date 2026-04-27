@@ -1,6 +1,3 @@
-from __future__ import absolute_import, unicode_literals
-
-import six
 from uuid import uuid4
 
 from django.utils.crypto import constant_time_compare
@@ -18,7 +15,7 @@ def generate_mfa_code(bin_key, drift=0):
     :param bin_key: The secret key to be converted into an MFA code
     :param drift: Number of time steps to shift the conversion.
     """
-    return six.text_type(totp(
+    return str(totp(
         bin_key,
         step=mfa_settings.STEP_SIZE,
         digits=mfa_settings.MFA_CODE_NUM_DIGITS,
@@ -43,12 +40,12 @@ def verify_mfa_code(bin_key, mfa_code):
     if not mfa_code:
         return False
     try:
-        mfa_code = int(mfa_code)
+        mfa_code = str(int(mfa_code)).zfill(mfa_settings.MFA_CODE_NUM_DIGITS)
     except ValueError:
         return False
     else:
-        totp_check = lambda drift: int(
-            generate_mfa_code(bin_key=bin_key, drift=drift))
+        totp_check = lambda drift: generate_mfa_code(
+            bin_key=bin_key, drift=drift)
         return any(
             constant_time_compare(totp_check(drift), mfa_code)
             for drift in [-1, 0, 1]

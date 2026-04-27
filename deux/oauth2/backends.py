@@ -1,15 +1,9 @@
-from __future__ import absolute_import, unicode_literals
+from urllib.parse import parse_qs
 
-import sys
 from oauth2_provider.oauth2_backends import OAuthLibCore
 
 from rest_framework.request import Request as DRFRequest
 from rest_framework.views import APIView
-
-if sys.version_info < (3,):
-    from urlparse import parse_qs
-else:
-    from urllib.parse import parse_qs
 
 
 class MFARequestBackend(OAuthLibCore):
