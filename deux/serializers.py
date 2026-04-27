@@ -1,7 +1,3 @@
-from __future__ import absolute_import, unicode_literals
-
-import six
-
 from rest_framework import serializers
 
 from deux.app_settings import mfa_settings
@@ -70,7 +66,7 @@ class _BaseChallengeRequestSerializer(MultiFactorAuthSerializer):
                 instance, self.challenge_type).generate_challenge()
         except FailedChallengeError as e:
             raise serializers.ValidationError({
-                "detail": six.text_type(e)
+                "detail": str(e)
             })
 
     def validate(self, internal_data):

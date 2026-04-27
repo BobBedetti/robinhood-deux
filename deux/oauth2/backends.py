@@ -1,15 +1,9 @@
-from __future__ import absolute_import, unicode_literals
+from urllib.parse import parse_qs, urlencode
 
-import sys
 from oauth2_provider.oauth2_backends import OAuthLibCore
 
 from rest_framework.request import Request as DRFRequest
 from rest_framework.views import APIView
-
-if sys.version_info < (3,):
-    from urlparse import parse_qs
-else:
-    from urllib.parse import parse_qs
 
 
 class MFARequestBackend(OAuthLibCore):
@@ -26,12 +20,17 @@ class MFARequestBackend(OAuthLibCore):
         Framework Request.
 
         :params request: The request to extract the body from.
-        :returns: Returns the items in the requests body.
+        :returns: Returns the items in the requests body as a urlencode-able
+            iterable.
         """
         if not isinstance(request, DRFRequest):
             request = APIView().initialize_request(request)
-        # our custom authorization view is already using DRF
-        return request.data.items() if request.data else []
+        data = request.data
+        if not data:
+            return []
+        if isinstance(data, str):
+            return parse_qs(data, keep_blank_values=True).items()
+        return data.items()
 
     def _get_extra_credentials(self, body):
         """
