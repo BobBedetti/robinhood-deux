@@ -1,7 +1,3 @@
-from __future__ import absolute_import, unicode_literals
-
-import six
-
 from rest_framework import serializers
 
 from deux.app_settings import mfa_settings
@@ -70,7 +66,7 @@ class _BaseChallengeRequestSerializer(MultiFactorAuthSerializer):
                 instance, self.challenge_type).generate_challenge()
         except FailedChallengeError as e:
             raise serializers.ValidationError({
-                "detail": six.text_type(e)
+                "detail": str(e)
             })
 
     def validate(self, internal_data):
@@ -181,8 +177,7 @@ class SMSChallengeRequestSerializer(_BaseChallengeRequestSerializer):
         :param validated_data: Data returned by ``validate``.
         """
         mfa_instance.phone_number = validated_data["phone_number"]
-        super(SMSChallengeRequestSerializer, self).update(
-            mfa_instance, validated_data)
+        super().update(mfa_instance, validated_data)
         mfa_instance.save()
         return mfa_instance
 

@@ -1,5 +1,3 @@
-from __future__ import absolute_import, unicode_literals
-
 from oauth2_provider.views import TokenView
 
 from deux.oauth2.backends import MFARequestBackend

@@ -1,8 +1,5 @@
-from __future__ import absolute_import, unicode_literals
-
-import six
 from binascii import unhexlify
-from mock import patch
+from unittest.mock import patch
 
 from django.test import TestCase
 from django_otp.util import random_hex
@@ -30,7 +27,7 @@ class GenerateMFACodeTests(TestCase):
     def test_time_based_mfa_code(self):
         mfa_code_0 = generate_mfa_code(self.bin_key, drift=0)
         mfa_code_1 = generate_mfa_code(self.bin_key, drift=1)
-        self.assertNotEquals(mfa_code_0, mfa_code_1)
+        self.assertNotEqual(mfa_code_0, mfa_code_1)
 
 
 class VerifyMFACodeTests(TestCase):
@@ -56,7 +53,7 @@ class VerifyMFACodeTests(TestCase):
             generate_mfa_code(self.bin_key, -2),
             generate_mfa_code(self.bin_key, 2),
             generate_mfa_code(self.bin_key, 3),
-            six.text_type(int_mfa_code + 1).zfill(
+            str(int_mfa_code + 1).zfill(
                 mfa_settings.MFA_CODE_NUM_DIGITS),
             "abcdef"
         )

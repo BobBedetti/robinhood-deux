@@ -1,5 +1,3 @@
-from __future__ import absolute_import, unicode_literals
-
 from deux import strings
 
 
@@ -15,7 +13,7 @@ class InvalidPhoneNumberError(FailedChallengeError):
     """
 
     def __init__(self, message=strings.INVALID_PHONE_NUMBER_ERROR):
-        super(InvalidPhoneNumberError, self).__init__(message)
+        super().__init__(message)
 
 
 class TwilioMessageError(FailedChallengeError):
@@ -25,4 +23,4 @@ class TwilioMessageError(FailedChallengeError):
     """
 
     def __init__(self, message=strings.SMS_SEND_ERROR):
-        super(TwilioMessageError, self).__init__(message)
+        super().__init__(message)
