@@ -1,4 +1,4 @@
-from urllib.parse import parse_qs, urlencode
+from urllib.parse import parse_qs, parse_qsl, urlencode
 
 from oauth2_provider.oauth2_backends import OAuthLibCore
 
@@ -29,7 +29,7 @@ class MFARequestBackend(OAuthLibCore):
         if not data:
             return []
         if isinstance(data, str):
-            return parse_qs(data, keep_blank_values=True).items()
+            return parse_qsl(data, keep_blank_values=True)
         return data.items()
 
     def _get_extra_credentials(self, body):
